@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>票智 · 智能报销工作台</title>
+  <style>
+    :root{--ink:#132238;--muted:#71809a;--line:#e8edf5;--bg:#f6f8fc;--card:#fff;--blue:#3d6df2;--blue-soft:#eef3ff;--green:#24a77a;--green-soft:#e8faf3;--amber:#d98d13;--amber-soft:#fff7e6;--red:#d85f6a;--red-soft:#fff0f1;--shadow:0 12px 32px rgba(25,53,101,.06)}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0} .app{display:flex;min-height:100vh}
+    .sidebar{width:224px;background:#101d33;color:#c1cbe0;padding:22px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}.brand{display:flex;gap:10px;align-items:center;color:#fff;font-weight:700;font-size:18px;padding:0 11px 30px}.brand-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#6e91ff,#4665dc);display:grid;place-items:center;font-size:17px;box-shadow:0 6px 18px #314ca766}.nav-label{font-size:11px;color:#72809a;padding:4px 11px 10px;letter-spacing:1px}.nav{display:grid;gap:4px}.nav-item{display:flex;align-items:center;gap:11px;padding:11px;border-radius:9px;color:#aebbd1;position:relative}.nav-item:hover{background:#1a2c4d;color:#dfe7f5}.nav-item.active{background:#24385d;color:#fff}.nav-item span:first-child{width:20px;text-align:center;font-size:16px}.nav-badge{position:absolute;right:11px;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:9px;padding:1px 6px;display:none}.side-bottom{margin-top:auto;padding:15px 11px;border-top:1px solid #273650;color:#91a0b9;font-size:12px;line-height:1.65}.user{display:flex;align-items:center;gap:9px;margin-top:14px;color:#d7dfed}.avatar{width:28px;height:28px;background:#dbe5ff;color:#4665dc;border-radius:50%;display:grid;place-items:center;font-weight:700;flex:none}
+    main{flex:1;min-width:0}.topbar{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 34px;position:sticky;top:0;z-index:3}.crumb{color:var(--muted);font-size:13px}.crumb b{color:var(--ink);font-size:17px;margin-right:12px}.top-actions{display:flex;align-items:center;gap:13px}.icon-btn{background:#f5f7fb;color:#60708a;width:34px;height:34px;border-radius:9px;font-size:16px;position:relative}.icon-btn .bell-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:9px;padding:1px 5px;display:none}.top-user{display:flex;align-items:center;gap:8px;color:#394860;font-weight:600}.content{padding:30px 34px 44px;max-width:1420px;margin:auto}.view{display:none}.view.active{display:block;animation:fadein .25s ease}@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .hero{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;letter-spacing:.6px;margin-bottom:8px}.hero h1{font-size:27px;margin:0 0 8px;letter-spacing:-.5px}.hero p{margin:0;color:var(--muted)}.primary{background:var(--blue);color:#fff;border-radius:9px;padding:11px 17px;font-weight:600;box-shadow:0 7px 14px #3d6df233}.primary:hover{background:#305ce0}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:22px}.kpi{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:17px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden;cursor:default}.kpi:after{content:"";position:absolute;right:-17px;bottom:-18px;width:68px;height:68px;border-radius:50%;background:var(--blue-soft)}.kpi.green:after{background:var(--green-soft)}.kpi.amber:after{background:var(--amber-soft)}.kpi.red:after{background:var(--red-soft)}.kpi-label{color:var(--muted);font-size:12px}.kpi-value{font-size:25px;font-weight:750;margin-top:8px}.kpi-note{font-size:12px;color:var(--green);margin-top:7px}.kpi-note.neutral{color:var(--muted)}.kpi-note.warn{color:var(--amber)}
+    .grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:19px;align-items:start}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}.card-head{display:flex;justify-content:space-between;align-items:center;padding:19px 20px 14px}.card-title{font-weight:700;font-size:16px}.subtle{font-size:12px;color:var(--muted)}.upload{padding:0 20px 20px}.dropzone{border:1px dashed #bac8e5;border-radius:12px;background:#fbfcff;min-height:185px;display:grid;place-items:center;text-align:center;padding:23px;transition:.2s}.dropzone.drag{border-color:var(--blue);background:#f4f7ff}.upload-icon{width:45px;height:45px;border-radius:13px;margin:0 auto 11px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;font-size:22px}.dropzone strong{display:block;font-size:14px}.dropzone p{color:var(--muted);font-size:12px;margin:8px 0 15px}.small-btn{border:1px solid #d9e1f2;background:#fff;color:var(--blue);border-radius:7px;padding:7px 12px;font-size:12px;font-weight:600}.small-btn:hover{background:var(--blue-soft)}.upload-modes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.mode{border:1px solid var(--line);border-radius:9px;padding:11px 8px;text-align:center;color:#52627b;background:#fff}.mode:hover{border-color:#a9bdf9;background:var(--blue-soft);color:var(--blue)}.mode .mode-icon{font-size:17px;margin-bottom:5px}.mode div:last-child{font-size:12px}.file-input{display:none}
+    .ticket-list{border-top:1px solid var(--line)}.ticket{display:grid;grid-template-columns:1fr 120px 100px 80px;align-items:center;padding:14px 20px;border-bottom:1px solid #f0f2f7;gap:12px}.ticket:last-child{border-bottom:0}.ticket-name{font-weight:600;font-size:13px}.ticket-meta{font-size:11px;color:var(--muted);margin-top:4px}.amount{font-weight:700;text-align:right}.tag{display:inline-flex;align-items:center;gap:4px;width:max-content;border-radius:20px;padding:4px 8px;font-size:11px;font-weight:600}.tag.ok{color:var(--green);background:var(--green-soft)}.tag.review{color:var(--amber);background:var(--amber-soft)}.tag.risk{color:var(--red);background:var(--red-soft)}.tag.info{color:var(--blue);background:var(--blue-soft)}.tag.muted{color:#6d7d95;background:#f1f4f9}.tag .dot{width:5px;height:5px;border-radius:50%;background:currentColor}.ticket-action{text-align:right;color:var(--blue);font-size:12px;cursor:pointer}.empty{padding:25px;text-align:center;color:var(--muted);font-size:12px}
+    .audit{padding:0 20px 20px}.audit-summary{display:flex;align-items:center;justify-content:space-between;background:#f8fbff;border:1px solid #e3ecff;border-radius:11px;padding:13px 14px;margin-bottom:13px}.audit-score{font-size:22px;font-weight:750;color:var(--green)}.audit-summary small{color:var(--muted);display:block;font-size:11px;margin-top:2px}.check-list{display:grid;gap:8px}.check{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid #f0f2f7;font-size:12px}.check:last-child{border:0}.check-icon{width:21px;height:21px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:var(--green-soft);color:var(--green);flex:none}.check-icon.warn{background:var(--amber-soft);color:var(--amber)}.check-icon.fail{background:var(--red-soft);color:var(--red)}.check span:nth-child(2){flex:1}.check-status{font-size:11px;color:var(--muted)}.check-status.ok{color:var(--green)}.check-status.warn{color:var(--amber)}.policy{margin-top:12px;padding:10px;background:#fffaf0;color:#956415;border-radius:8px;font-size:11px;line-height:1.6}.section-gap{margin-top:19px}
+    /* 我的单据 */
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:15px}.search{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 12px;color:var(--muted)}.search input{border:0;outline:0;flex:1;background:transparent;color:var(--ink)}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:#fff;color:#5a6a84;border-radius:20px;padding:7px 13px;font-size:12px;font-weight:600}.chip.active{background:var(--blue);border-color:var(--blue);color:#fff}.tbl{width:100%;border-collapse:collapse}.tbl th{font-size:11px;color:var(--muted);text-align:left;font-weight:600;padding:11px 20px;border-bottom:1px solid var(--line);background:#fafcfe}.tbl td{padding:13px 20px;border-bottom:1px solid #f0f2f7;font-size:13px}.tbl tr:hover td{background:#fafbff}.tbl tr:last-child td{border-bottom:0}.row-actions{display:flex;gap:6px;justify-content:flex-end}.link-btn{color:var(--blue);font-size:12px;font-weight:600;background:none;padding:4px 6px;border-radius:6px}.link-btn:hover{background:var(--blue-soft)}.link-btn.danger{color:var(--red)}.link-btn.danger:hover{background:var(--red-soft)}.claim-no{font-weight:700;font-size:13px}
+    /* 审批 */
+    .approve-card{margin:0 20px 14px;border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff}.approve-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.approve-items{margin:11px 0;padding:11px;background:#fafbfe;border-radius:9px;font-size:12px;color:#4c5c76;display:grid;gap:5px}.approve-foot{display:flex;gap:9px;justify-content:flex-end}.ok-btn{background:var(--green);color:#fff;border-radius:8px;padding:9px 16px;font-weight:600}.ok-btn:hover{background:#1e9269}.no-btn{background:var(--red-soft);color:var(--red);border-radius:8px;padding:9px 16px;font-weight:600}.no-btn:hover{background:#ffe3e5}
+    /* 分析 */
+    .charts{display:grid;grid-template-columns:repeat(2,1fr);gap:19px;align-items:start}.chart-box{padding:6px 20px 20px}.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted);margin-top:12px}.legend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:5px}.stat-line{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f2f7;font-size:13px}.stat-line:last-child{border:0}.stat-line b{font-size:14px}
+    /* 规则 */
+    .rules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;padding:4px 20px 6px}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid #dbe2ef;border-radius:7px;padding:9px;color:var(--ink);background:#fafbfe;outline:none}.field input:focus,.field textarea:focus{border-color:#a9bdf9;background:#fff}.switch-row{display:flex;justify-content:space-between;align-items:center;padding:13px 20px;border-bottom:1px solid #f0f2f7}.switch{width:38px;height:21px;border-radius:12px;background:#d7dfeb;position:relative;transition:.2s;flex:none}.switch:after{content:"";position:absolute;top:2.5px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px #0003}.switch.on{background:var(--green)}.switch.on:after{left:19px}
+    /* 弹窗 */
+    .modal-backdrop{display:none;position:fixed;inset:0;background:#14233b80;z-index:5;place-items:center;padding:20px}.modal-backdrop.show{display:grid}.modal{background:#fff;border-radius:16px;width:min(620px,100%);box-shadow:0 20px 70px #08142b44;overflow:hidden;max-height:92vh;display:flex;flex-direction:column}.modal-head{display:flex;justify-content:space-between;padding:20px 22px 14px;border-bottom:1px solid var(--line);align-items:center}.modal-head h2{font-size:17px;margin:0}.close{background:#f3f5f9;color:#77849a;width:27px;height:27px;border-radius:7px}.modal-body{padding:20px 22px;overflow:auto}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field-grid .wide{grid-column:1/-1}.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:15px 22px;border-top:1px solid var(--line);flex-wrap:wrap}.secondary{background:#f2f4f8;color:#57657b;border-radius:8px;padding:9px 15px}.secondary:hover{background:#e8ebf1}.danger-btn{background:var(--red);color:#fff;border-radius:8px;padding:9px 15px;font-weight:600}.item-row{display:grid;grid-template-columns:110px 1fr 110px 32px;gap:8px;margin-bottom:8px;align-items:center}.item-row input,.item-row select{border:1px solid #dbe2ef;border-radius:7px;padding:8px;background:#fafbfe;outline:none;width:100%}.del-item{background:var(--red-soft);color:var(--red);border-radius:7px;width:30px;height:32px}.timeline{display:grid;gap:0;margin-top:6px}.tl-item{display:flex;gap:11px;padding:7px 0;position:relative}.tl-item:before{content:"";position:absolute;left:5px;top:22px;bottom:-7px;width:1px;background:var(--line)}.tl-item:last-child:before{display:none}.tl-dot{width:11px;height:11px;border-radius:50%;background:var(--blue);margin-top:4px;flex:none;position:relative;z-index:1}.tl-dot.ok{background:var(--green)}.tl-dot.no{background:var(--red)}.tl-text{font-size:12px;color:#4c5c76}.tl-time{font-size:11px;color:var(--muted)}
+    .toast{position:fixed;right:25px;bottom:25px;background:#172641;color:#fff;padding:11px 16px;border-radius:9px;box-shadow:0 10px 25px #0e1a2d2a;opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s;font-size:13px;z-index:9}.toast.show{opacity:1;transform:translateY(0)}
+    /* 通知 */
+    .bell-wrap{position:relative}.dropdown{display:none;position:absolute;right:0;top:44px;width:320px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 44px #0e1a2d1f;overflow:hidden;z-index:6}.dropdown.show{display:block}.dd-head{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;border-bottom:1px solid var(--line);font-weight:700;font-size:13px}.dd-list{max-height:300px;overflow:auto}.dd-item{padding:11px 15px;border-bottom:1px solid #f2f4f9;font-size:12px;color:#4c5c76;display:grid;gap:3px}.dd-item:last-child{border:0}.dd-item.unread{background:#f7f9ff}.dd-time{font-size:11px;color:var(--muted)}.dd-empty{padding:24px;text-align:center;color:var(--muted);font-size:12px}
+    @media(max-width:980px){.sidebar{width:72px;padding:20px 9px}.brand{padding-left:12px}.brand span:last-child,.nav-label,.nav-item span:last-child,.nav-badge,.side-bottom{display:none}.nav-item{justify-content:center}.content{padding:24px}.grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}.rules-grid{grid-template-columns:1fr}}@media(max-width:600px){.topbar{padding:0 18px}.top-user span{display:none}.content{padding:20px 14px}.hero{display:block}.hero .primary{margin-top:17px}.kpis{gap:9px}.kpi{padding:13px}.kpi-value{font-size:21px}.upload-modes{grid-template-columns:repeat(2,1fr)}.ticket{grid-template-columns:1fr 78px}.ticket .tag,.ticket .ticket-action{display:none}.field-grid{grid-template-columns:1fr}.tbl-wrap{overflow-x:auto}.tbl{min-width:640px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">票</div><span>票智 · 智能报销</span></div>
+      <div class="nav-label">工作台</div>
+      <nav class="nav">
+        <div class="nav-item active" data-view="dashboard"><span>⌂</span><span>报销工作台</span></div>
+        <div class="nav-item" data-view="claims"><span>◫</span><span>我的单据</span></div>
+        <div class="nav-item" data-view="approvals"><span>✓</span><span>待我审批</span><em class="nav-badge" id="approveBadge"></em></div>
+        <div class="nav-item" data-view="analytics"><span>▦</span><span>费用分析</span></div>
+      </nav>
+      <div class="nav-label" style="margin-top:25px">系统设置</div>
+      <nav class="nav">
+        <div class="nav-item" data-view="rules"><span>⚙</span><span>报销规则</span></div>
+        <div class="nav-item" data-view="integrations"><span>⌘</span><span>系统集成</span></div>
+      </nav>
+      <div class="side-bottom">全流程数字化<br/>让报销回归简单<br/><div class="user"><div class="avatar">李</div><span>李晓 · 华东区</span></div></div>
+    </aside>
+    <main>
+      <header class="topbar"><div class="crumb"><b id="crumbTitle">报销工作台</b><span id="crumbSub">票据中心</span></div>
+        <div class="top-actions">
+          <div class="bell-wrap"><button class="icon-btn" id="bellBtn" title="消息">♢<em class="bell-badge" id="bellBadge"></em></button>
+            <div class="dropdown" id="bellDrop"><div class="dd-head"><span>消息通知</span><button class="link-btn" id="markRead">全部已读</button></div><div class="dd-list" id="bellList"></div></div>
+          </div>
+          <button class="icon-btn" title="帮助" onclick="showToast('帮助中心：票智使用手册与常见问题')">?</button>
+          <div class="top-user"><div class="avatar">李</div><span>李晓</span>⌄</div>
+        </div>
+      </header>
+      <div class="content">
+
+        <!-- ============ 报销工作台 ============ -->
+        <section class="view active" id="view-dashboard">
+          <div class="hero"><div><div class="eyebrow">SMART EXPENSE · <span id="yearNow"></span></div><h1>你好，李晓，今天也轻松报销</h1><p>上传票据，剩下的交给票智自动完成。</p></div><button class="primary" id="newClaim">＋ 新建报销单</button></div>
+          <section class="kpis" id="kpiWrap"></section>
+          <div class="grid">
+            <div>
+              <section class="card"><div class="card-head"><div><div class="card-title">票据采集</div><div class="subtle" style="margin-top:5px">支持图片、PDF 和电子发票，自动进入识别队列</div></div><span class="tag ok"><span class="dot"></span>系统在线</span></div>
+                <div class="upload"><div class="dropzone" id="dropzone"><div><div class="upload-icon">↥</div><strong>拖拽票据到这里，或点击上传</strong><p>支持 JPG、PNG、PDF，单个文件不超过 20MB</p><button class="small-btn" id="chooseBtn">选择文件</button><input class="file-input" id="fileInput" type="file" accept="image/*,.pdf" multiple /></div></div>
+                  <div class="upload-modes"><button class="mode" data-mode="拍照"><div class="mode-icon">▣</div><div>手机拍照</div></button><button class="mode" data-mode="相册"><div class="mode-icon">▧</div><div>相册上传</div></button><button class="mode" data-mode="PDF"><div class="mode-icon">▤</div><div>PDF / 电子票</div></button><button class="mode" data-mode="邮箱"><div class="mode-icon">✉</div><div>邮箱收票</div></button></div>
+                </div>
+              </section>
+              <section class="card section-gap"><div class="card-head"><div><div class="card-title">最近票据</div><div class="subtle" style="margin-top:5px">上传后将自动进行识别与合规审核</div></div><button class="small-btn" id="viewAll">全部票据</button></div><div class="ticket-list" id="ticketList"></div></section>
+            </div>
+            <div>
+              <section class="card"><div class="card-head"><div><div class="card-title">智能审核中心</div><div class="subtle" style="margin-top:5px">实时监测票据合规状态</div></div><span style="color:var(--green);font-size:12px">● 自动运行中</span></div><div class="audit" id="auditBox"></div></section>
+              <section class="card section-gap"><div class="card-head"><div><div class="card-title">识别能力</div><div class="subtle" style="margin-top:5px">已覆盖常用票据类型</div></div><span class="tag ok">AI OCR</span></div><div class="audit" style="padding-top:0"><div style="display:flex;flex-wrap:wrap;gap:7px"><span class="tag" style="color:#53627a;background:#f4f6fa">增值税发票</span><span class="tag" style="color:#53627a;background:#f4f6fa">机票行程单</span><span class="tag" style="color:#53627a;background:#f4f6fa">火车票</span><span class="tag" style="color:#53627a;background:#f4f6fa">出租车票</span><span class="tag" style="color:#53627a;background:#f4f6fa">住宿发票</span><span class="tag" style="color:#53627a;background:#f4f6fa">电子发票</span></div></div></section>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 我的单据 ============ -->
+        <section class="view" id="view-claims">
+          <div class="hero"><div><div class="eyebrow">MY CLAIMS</div><h1>我的单据</h1><p>管理你的报销单：草稿可编辑，提交后进入审批流。</p></div><button class="primary" id="newClaim2">＋ 新建报销单</button></div>
+          <section class="card">
+            <div style="padding:19px 20px 0"><div class="toolbar">
+              <div class="search">🔍<input id="claimSearch" placeholder="搜索单号 / 标题 / 费用类型…" /></div>
+              <div class="chips" id="statusChips"></div>
+            </div></div>
+            <div class="tbl-wrap"><table class="tbl"><thead><tr><th>单号</th><th>报销单标题</th><th>费用类型</th><th>金额</th><th>状态</th><th>创建时间</th><th style="text-align:right">操作</th></tr></thead><tbody id="claimRows"></tbody></table></div>
+          </section>
+        </section>
+
+        <!-- ============ 待我审批 ============ -->
+        <section class="view" id="view-approvals">
+          <div class="hero"><div><div class="eyebrow">APPROVALS</div><h1>待我审批</h1><p>以下报销单等待你的审批决定，处理后将通知提交人。</p></div></div>
+          <section class="card" id="approveList"></section>
+        </section>
+
+        <!-- ============ 费用分析 ============ -->
+        <section class="view" id="view-analytics">
+          <div class="hero"><div><div class="eyebrow">ANALYTICS</div><h1>费用分析</h1><p>基于全部报销单数据的自动统计。</p></div></div>
+          <section class="kpis" id="anaKpis"></section>
+          <div class="charts">
+            <section class="card"><div class="card-head"><div><div class="card-title">近 6 个月报销金额</div><div class="subtle" style="margin-top:5px">按提交月份汇总（含审批中）</div></div></div><div class="chart-box" id="barChart"></div></section>
+            <section class="card"><div class="card-head"><div><div class="card-title">费用类型占比</div><div class="subtle" style="margin-top:5px">已通过 + 已打款的报销单</div></div></div><div class="chart-box" id="donutChart"></div></section>
+            <section class="card"><div class="card-head"><div><div class="card-title">状态分布</div><div class="subtle" style="margin-top:5px">全部报销单</div></div></div><div class="chart-box" id="statusChart"></div></section>
+            <section class="card"><div class="card-head"><div><div class="card-title">消费明细 Top 5</div><div class="subtle" style="margin-top:5px">单笔金额最高</div></div></div><div class="chart-box" id="topItems"></div></section>
+          </div>
+        </section>
+
+        <!-- ============ 报销规则 ============ -->
+        <section class="view" id="view-rules">
+          <div class="hero"><div><div class="eyebrow">POLICY</div><h1>报销规则</h1><p>规则保存后立即生效，智能审核中心将按此校验票据。</p></div><button class="primary" id="saveRules">保存规则</button></div>
+          <section class="card">
+            <div class="card-head"><div class="card-title">额度与标准</div><span class="subtle">单位：元（CNY）</span></div>
+            <div class="rules-grid">
+              <div class="field"><label>单笔报销上限</label><input id="r_singleCap" type="number" min="0" /></div>
+              <div class="field"><label>月度报销上限</label><input id="r_monthCap" type="number" min="0" /></div>
+              <div class="field"><label>住宿标准（一线城市 / 晚）</label><input id="r_lodging" type="number" min="0" /></div>
+              <div class="field"><label>餐饮标准（元 / 天）</label><input id="r_meal" type="number" min="0" /></div>
+              <div class="field"><label>市内交通（出租车）单次上限</label><input id="r_taxi" type="number" min="0" /></div>
+              <div class="field"><label>票据有效期（天）</label><input id="r_validDays" type="number" min="1" /></div>
+            </div>
+            <div class="card-head" style="padding-bottom:0"><div class="card-title">自动化选项</div></div>
+            <div class="switch-row"><div><b style="font-size:13px">自动审核</b><div class="subtle" style="margin-top:3px">OCR 识别完成后自动执行合规校验</div></div><div class="switch on" id="r_autoAudit"></div></div>
+            <div class="switch-row"><div><b style="font-size:13px">发票验真</b><div class="subtle" style="margin-top:3px">对增值税发票自动执行真伪校验</div></div><div class="switch" id="r_verify"></div></div>
+            <div style="height:16px"></div>
+          </section>
+        </section>
+
+        <!-- ============ 系统集成 ============ -->
+        <section class="view" id="view-integrations">
+          <div class="hero"><div><div class="eyebrow">INTEGRATIONS</div><h1>系统集成</h1><p>连接企业内部系统，打通报销数据链路。</p></div></div>
+          <div class="grid" style="grid-template-columns:1fr 1fr">
+            <section class="card"><div class="card-head"><div><div class="card-title">财务系统</div><div class="subtle" style="margin-top:5px">金蝶 / 用友 / SAP 凭证自动生成</div></div><div class="switch on" data-int></div></div></section>
+            <section class="card"><div class="card-head"><div><div class="card-title">税务验真平台</div><div class="subtle" style="margin-top:5px">增值税发票在线查验</div></div><div class="switch" data-int></div></div></section>
+            <section class="card"><div class="card-head"><div><div class="card-title">企业网银付款</div><div class="subtle" style="margin-top:5px">审批通过后自动发起打款</div></div><div class="switch" data-int></div></div></section>
+            <section class="card"><div class="card-head"><div><div class="card-title">企业微信 / 钉钉</div><div class="subtle" style="margin-top:5px">审批消息实时推送</div></div><div class="switch on" data-int></div></div></section>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- OCR 识别结果弹窗 -->
+  <div class="modal-backdrop" id="modal"><div class="modal"><div class="modal-head"><h2>识别结果 · 自动生成报销信息</h2><button class="close" id="closeModal">×</button></div><div class="modal-body"><div style="display:grid;grid-template-columns:132px 1fr;gap:14px;align-items:center;padding:11px;background:#f7fbff;border:1px solid #e1edff;border-radius:9px;margin-bottom:17px"><div id="previewBox" style="height:108px;border-radius:8px;background:#edf2fb;display:grid;place-items:center;overflow:hidden"><span class="subtle">等待预览</span></div><div><b id="modalFile">发票已上传</b><div class="subtle" id="ocrStatus" style="margin-top:6px">准备开始 OCR 识别…</div><div class="subtle" style="margin-top:5px;color:var(--green)">✓ 文件仅在当前浏览器处理</div></div></div><div class="field-grid"><div class="field"><label>发票号码</label><input id="invoiceNo" placeholder="OCR 识别中…" readonly></div><div class="field"><label>开票日期</label><input id="invoiceDate" placeholder="OCR 识别中…" readonly></div><div class="field"><label>销售方</label><input id="seller" placeholder="OCR 识别中…" readonly></div><div class="field"><label>含税金额</label><input id="total" placeholder="OCR 识别中…" readonly></div><div class="field"><label>费用类型</label><select id="expenseType"><option>交通费</option><option>住宿费</option><option>餐饮费</option><option>办公费</option><option>通讯费</option><option>其他</option></select></div><div class="field"><label>审核结果</label><input id="auditResult" value="等待识别后检查" readonly></div></div><div id="ocrRaw" style="display:none;margin-top:13px;padding:10px;background:#fafbfe;border-radius:8px;color:#73819a;font-size:11px;line-height:1.6;max-height:72px;overflow:auto"></div></div><div class="modal-foot"><button class="secondary" id="cancelModal">稍后处理</button><button class="primary" id="submitModal">生成报销单</button></div></div></div>
+
+  <!-- 报销单编辑弹窗 -->
+  <div class="modal-backdrop" id="claimModal"><div class="modal"><div class="modal-head"><h2 id="claimModalTitle">新建报销单</h2><button class="close" id="closeClaimModal">×</button></div><div class="modal-body">
+    <div class="field-grid"><div class="field wide"><label>报销单标题 *</label><input id="c_title" placeholder="例如：9月上海出差报销" /></div>
+    <div class="field"><label>报销人</label><input id="c_applicant" value="李晓" /></div>
+    <div class="field"><label>所属部门</label><input id="c_dept" value="华东区" /></div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px"><b style="font-size:13px">费用明细</b><button class="small-btn" id="addItem">＋ 添加明细</button></div>
+    <div id="itemRows"></div>
+    <div style="display:flex;justify-content:flex-end;gap:22px;padding:10px 2px;font-size:13px"><span class="subtle">合计</span><b id="c_total" style="font-size:16px">¥ 0.00</b></div>
+    <div class="field"><label>备注说明</label><textarea id="c_note" rows="2" placeholder="补充说明（例如超标原因），将随单提交给审批人"></textarea></div>
+  </div><div class="modal-foot"><button class="secondary" id="cancelClaimModal">取消</button><button class="primary" id="saveClaim">保存草稿</button></div></div></div>
+
+  <!-- 报销单详情弹窗 -->
+  <div class="modal-backdrop" id="detailModal"><div class="modal"><div class="modal-head"><h2 id="d_title">报销单详情</h2><button class="close" id="closeDetailModal">×</button></div><div class="modal-body" id="detailBody"></div><div class="modal-foot" id="detailFoot"></div></div></div>
+
+  <!-- 驳回理由弹窗 -->
+  <div class="modal-backdrop" id="rejectModal"><div class="modal" style="width:min(440px,100%)"><div class="modal-head"><h2>驳回报销单</h2><button class="close" id="closeRejectModal">×</button></div><div class="modal-body"><div class="field"><label>驳回理由（必填，将通知提交人）</label><textarea id="rejectReason" rows="3" placeholder="例如：住宿发票超出城市标准，请补充说明"></textarea></div></div><div class="modal-foot"><button class="secondary" id="cancelRejectModal">取消</button><button class="danger-btn" id="confirmReject">确认驳回</button></div></div></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <div class="toast" id="toast"></div>
+  <script>
+  /* ================= 基础工具 ================= */
+  const $=id=>document.getElementById(id);
+  function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove('show'),2600)}
+  const fmt=n=>'¥ '+Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const now=()=>new Date();
+  const fmtDate=d=>{const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')} ${String(x.getHours()).padStart(2,'0')}:${String(x.getMinutes()).padStart(2,'0')}`};
+  const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+  const daysAgo=n=>new Date(Date.now()-n*864e5).toISOString();
+
+  /* ================= 数据层 ================= */
+  const LS_KEY='piaozhi_state_v1';
+  const CATS=['交通费','住宿费','餐饮费','办公费','通讯费','其他'];
+  const STATUS={draft:{label:'草稿',cls:'muted'},pending:{label:'待审批',cls:'review'},approved:{label:'已通过',cls:'ok'},rejected:{label:'已驳回',cls:'risk'},paid:{label:'已打款',cls:'info'}};
+  function seedState(){
+    const mk=(title,cat,amount,status,ago,itemName)=>({id:uid(),no:'BX'+String(Math.floor(1e5+Math.random()*9e5)),title,applicant:'李晓',dept:'华东区',amount,status,note:'',createdAt:daysAgo(ago),submittedAt:status==='draft'?null:daysAgo(ago-0.3),items:[{name:itemName||title,category:cat,amount}],history:[{time:daysAgo(ago),action:'创建报销单',actor:'李晓',note:''}].concat(status!=='draft'?[{time:daysAgo(ago-0.3),action:'提交审批',actor:'李晓',note:''}]:[]).concat(status==='approved'?[{time:daysAgo(ago-1),action:'审批通过',actor:'王敏 · 财务总监',note:'符合报销标准'}]:[]).concat(status==='rejected'?[{time:daysAgo(ago-1),action:'审批驳回',actor:'王敏 · 财务总监',note:'住宿发票超出城市标准，请补充说明'}]:[]).concat(status==='paid'?[{time:daysAgo(ago-1),action:'审批通过',actor:'王敏 · 财务总监',note:''},{time:daysAgo(ago-2),action:'已打款',actor:'财务系统',note:'付款流水 '+Math.floor(1e8+Math.random()*9e8)}]:[])});
+    return {
+      tickets:[
+        {id:uid(),name:'上海云途信息技术有限公司 · 住宿费',meta:'增值税电子普通发票  ·  2026-09-10',amount:1280,status:'已通过',type:'ok',category:'住宿费',invoiceNo:'25319'+Math.floor(1e9+Math.random()*9e9),seller:'上海云途信息技术有限公司'},
+        {id:uid(),name:'中国铁路网络有限公司 · 交通费',meta:'火车票  ·  2026-09-08',amount:553,status:'已通过',type:'ok',category:'交通费',invoiceNo:'',seller:'中国铁路网络有限公司'},
+        {id:uid(),name:'杭州西溪酒店 · 住宿费',meta:'增值税专用发票  ·  2026-09-06',amount:1080,status:'需关注',type:'review',category:'住宿费',invoiceNo:'25319'+Math.floor(1e9+Math.random()*9e9),seller:'杭州西溪酒店'}
+      ],
+      claims:[
+        mk('9月上海客户拜访 · 差旅报销','交通费',1735.5,'approved',5,'高铁票 上海-上海虹桥'),
+        mk('杭州渠道大会 · 住宿报销','住宿费',1080,'pending',2,'杭州西溪酒店住宿 2 晚'),
+        mk('市场部 8 月团建餐费','餐饮费',2460,'paid',26,'团建聚餐'),
+        mk('8 月办公耗材采购','办公费',365.8,'approved',30,'打印纸与硒鼓'),
+        mk('7 月通讯补贴','通讯费',300,'paid',48,'移动通讯月费'),
+        mk('6 月深圳展会差旅','交通费',3120,'rejected',66,'机票往返 · 超标待说明')
+      ],
+      rules:{singleCap:5000,monthCap:20000,lodging:800,meal:200,taxi:200,validDays:90,autoAudit:true,verify:false},
+      notifications:[{id:uid(),time:daysAgo(0.4),text:'杭州渠道大会 · 住宿报销 已提交，等待审批',read:false},{id:uid(),time:daysAgo(5),text:'9月上海客户拜访 · 差旅报销 审批通过',read:true}]
+    };
+  }
+  let state;
+  try{state=JSON.parse(localStorage.getItem(LS_KEY))||seedState()}catch(e){state=seedState()}
+  const save=()=>localStorage.setItem(LS_KEY,JSON.stringify(state));
+  save();
+  function pushNotify(text){state.notifications.unshift({id:uid(),time:new Date().toISOString(),text,read:false});if(state.notifications.length>30)state.notifications.length=30;save();renderBell()}
+  const pendingClaims=()=>state.claims.filter(c=>c.status==='pending');
+
+  /* ================= 路由 ================= */
+  const VIEW_META={dashboard:['报销工作台','票据中心'],claims:['我的单据','报销单管理'],approvals:['待我审批','审批中心'],analytics:['费用分析','数据洞察'],rules:['报销规则','合规配置'],integrations:['系统集成','外部连接']};
+  let curView='dashboard';
+  function switchView(v){
+    curView=v;
+    document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===v));
+    $('crumbTitle').textContent=VIEW_META[v][0];$('crumbSub').textContent=VIEW_META[v][1];
+    $('bellDrop').classList.remove('show');
+    if(v==='claims')renderClaims();if(v==='approvals')renderApprovals();if(v==='analytics')renderAnalytics();if(v==='rules')renderRules();
+    window.scrollTo({top:0});
+  }
+  document.querySelectorAll('.nav-item').forEach(x=>x.onclick=()=>switchView(x.dataset.view));
+
+  /* ================= 工作台渲染 ================= */
+  function renderDashboard(){
+    $('yearNow').textContent=now().getFullYear();
+    const m=now().getMonth(),y=now().getFullYear();
+    const monthPaid=state.claims.filter(c=>['approved','paid'].includes(c.status)&&new Date(c.submittedAt||c.createdAt).getMonth()===m&&new Date(c.submittedAt||c.createdAt).getFullYear()===y).reduce((s,c)=>s+c.amount,0);
+    const tickets=ticketsSorted();
+    const warn=tickets.filter(t=>t.type==='review').length;
+    $('kpiWrap').innerHTML=`
+      <div class="kpi"><div class="kpi-label">本月已报销</div><div class="kpi-value">${fmt(monthPaid)}</div><div class="kpi-note">含审批通过与已打款</div></div>
+      <div class="kpi green"><div class="kpi-label">自动审核通过</div><div class="kpi-value">${auditRate()}%</div><div class="kpi-note">↑ 效率持续提升</div></div>
+      <div class="kpi amber"><div class="kpi-label">待处理票据</div><div class="kpi-value">${tickets.length} 张</div><div class="kpi-note ${warn?'warn':''}">${warn?`其中 ${warn} 张需关注`:'全部正常'}</div></div>
+      <div class="kpi red"><div class="kpi-label">待我审批</div><div class="kpi-value">${pendingClaims().length} 单</div><div class="kpi-note neutral">点击侧边栏处理</div></div>`;
+    renderTickets(tickets);
+    renderAudit(tickets);
+    renderBell();
+  }
+  const ticketsSorted=()=>[...state.tickets].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
+  const auditRate=()=>{const t=state.tickets.length;if(!t)return 100;return Math.round((1-state.tickets.filter(x=>x.type==='review'||x.type==='risk').length/t)*1000)/10};
+  function renderTickets(tickets){
+    const list=$('ticketList');
+    list.innerHTML=tickets.slice(0,5).map(t=>`<div class="ticket"><div><div class="ticket-name">${t.name}</div><div class="ticket-meta">${t.meta}${t.category?'  ·  '+t.category:''}</div></div><div class="amount">${fmt(t.amount)}</div><span class="tag ${t.type}"><span class="dot"></span>${t.status}</span><div class="ticket-action" data-id="${t.id}">查看详情 →</div></div>`).join('')||'<div class="empty">暂无票据，先上传一张吧</div>';
+    list.querySelectorAll('.ticket-action').forEach(x=>x.onclick=()=>showTicketDetail(tickets.find(t=>t.id===x.dataset.id)));
+  }
+  function renderAudit(tickets){
+    const rules=state.rules;
+    const dupNo=tickets.filter((t,i,arr)=>t.invoiceNo&&arr.some((o,j)=>j!==i&&o.invoiceNo&&o.invoiceNo===t.invoiceNo));
+    const overStd=tickets.filter(t=>(t.category==='住宿费'&&t.amount>rules.lodging)||(t.category==='餐饮费'&&t.amount>rules.meal)||(t.category==='交通费'&&/出租/.test(t.name)&&t.amount>rules.taxi));
+    const expired=tickets.filter(t=>t.createdAt&&Date.now()-new Date(t.createdAt)>rules.validDays*864e5);
+    const submittedMonth=state.claims.filter(c=>c.status!=='draft'&&new Date(c.submittedAt||c.createdAt).getMonth()===now().getMonth()).reduce((s,c)=>s+c.amount,0);
+    const checks=[
+      {name:'发票真伪验证',ok:!rules.verify||true,status:!rules.verify?'未开启（可在报销规则中开启）':`${tickets.filter(t=>t.type!=='risk').length} / ${tickets.length} 通过`},
+      {name:'重复报销检测',ok:!dupNo.length,status:dupNo.length?`${dupNo.length} 张疑似重复`:'未发现重复'},
+      {name:'报销标准校验',ok:!overStd.length,warn:!!overStd.length,status:overStd.length?`${overStd.length} 张需关注`:'全部符合标准'},
+      {name:'预算额度检查',ok:submittedMonth<=rules.monthCap,warn:submittedMonth>rules.monthCap*0.8,status:submittedMonth>rules.monthCap?'本月额度已超支':`已用 ${fmt(submittedMonth)} / ${fmt(rules.monthCap)}`},
+      {name:'超时限风险识别',ok:!expired.length,status:expired.length?`${expired.length} 张超过 ${rules.validDays} 天`:'无异常'}
+    ];
+    const score=checks.filter(c=>c.ok).length/checks.length*100;
+    $('auditBox').innerHTML=`<div class="audit-summary"><div><b>审核健康度</b><small>基于 ${tickets.length} 张票据实时校验</small></div><div class="audit-score" style="color:${score===100?'var(--green)':score>=60?'var(--amber)':'var(--red)'}">${Math.round(score)}%</div></div>
+      <div class="check-list">${checks.map(c=>`<div class="check"><div class="check-icon ${c.ok?'':c.warn?'warn':'fail'}">${c.ok?'✓':'!'}</div><span>${c.name}</span><span class="check-status ${c.ok?'ok':c.warn?'warn':''}">${c.status}</span></div>`).join('')}</div>
+      <div class="policy">ⓘ ${overStd.length?`发现 ${overStd.length} 张票据超出报销标准（住宿 ≤ ${rules.lodging}/晚、餐饮 ≤ ${rules.meal}/天），已标记并提醒提交补充说明。`:'当前票据均符合报销标准，无需补充材料。'}</div>`;
+  }
+  function showTicketDetail(t){
+    openDetail(`<div class="field-grid" style="margin-bottom:6px">
+      <div class="field wide"><label>票据名称</label><input value="${t.name}" readonly style="background:#fafbfe"></div>
+      <div class="field"><label>票据信息</label><input value="${t.meta||'—'}" readonly style="background:#fafbfe"></div>
+      <div class="field"><label>费用类型</label><input value="${t.category||'未分类'}" readonly style="background:#fafbfe"></div>
+      <div class="field"><label>发票号码</label><input value="${t.invoiceNo||'—'}" readonly style="background:#fafbfe"></div>
+      <div class="field"><label>销售方</label><input value="${t.seller||'—'}" readonly style="background:#fafbfe"></div>
+      <div class="field wide"><label>金额</label><input value="${fmt(t.amount)}" readonly style="background:#fafbfe;font-weight:700"></div></div>`,
+      `<button class="secondary" id="dClose">关闭</button>`);
+  }
+
+  /* ================= 我的单据 ================= */
+  let claimFilter='all',claimKeyword='';
+  function renderClaims(){
+    const chips=[['all','全部'],['draft','草稿'],['pending','待审批'],['approved','已通过'],['rejected','已驳回'],['paid','已打款']];
+    $('statusChips').innerHTML=chips.map(([k,l])=>`<button class="chip ${claimFilter===k?'active':''}" data-k="${k}">${l}</button>`).join('');
+    $('statusChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{claimFilter=c.dataset.k;renderClaims()});
+    const rows=state.claims.filter(c=>(claimFilter==='all'||c.status===claimFilter)&&(!claimKeyword||[c.no,c.title,c.note,...c.items.map(i=>i.category)].join(' ').toLowerCase().includes(claimKeyword))).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+    $('claimRows').innerHTML=rows.map(c=>`<tr><td class="claim-no">${c.no}</td><td>${c.title}<div class="subtle" style="margin-top:3px">${c.applicant} · ${c.dept}</div></td><td>${[...new Set(c.items.map(i=>i.category))].join(' / ')}</td><td class="amount" style="text-align:left">${fmt(c.amount)}</td><td><span class="tag ${STATUS[c.status].cls}"><span class="dot"></span>${STATUS[c.status].label}</span></td><td class="subtle">${fmtDate(c.createdAt)}</td><td><div class="row-actions"><button class="link-btn" data-act="view" data-id="${c.id}">详情</button>${c.status==='draft'||c.status==='rejected'?`<button class="link-btn" data-act="edit" data-id="${c.id}">编辑</button>`:''}${c.status==='draft'||c.status==='rejected'?`<button class="link-btn danger" data-act="del" data-id="${c.id}">删除</button>`:''}</div></td></tr>`).join('')||'<tr><td colspan="7" class="empty">没有符合条件的报销单</td></tr>';
+    $('claimRows').querySelectorAll('.link-btn').forEach(b=>b.onclick=()=>{
+      const c=state.claims.find(x=>x.id===b.dataset.id);
+      if(b.dataset.act==='view')openClaimDetail(c);
+      else if(b.dataset.act==='edit')openClaimEditor(c);
+      else if(b.dataset.act==='del'){if(confirm(`确定删除报销单 ${c.no}「${c.title}」？此操作不可恢复。`)){state.claims=state.claims.filter(x=>x.id!==c.id);save();renderClaims();renderBell();showToast('报销单已删除')}}
+    });
+  }
+  $('claimSearch').oninput=e=>{claimKeyword=e.target.value.trim().toLowerCase();renderClaims()};
+
+  /* 报销单编辑器 */
+  let editingClaim=null;
+  function openClaimEditor(c){
+    editingClaim=c?JSON.parse(JSON.stringify(c)):null;
+    $('claimModalTitle').textContent=editingClaim?'编辑报销单 · '+editingClaim.no:'新建报销单';
+    $('c_title').value=editingClaim?editingClaim.title:'';
+    $('c_applicant').value=editingClaim?editingClaim.applicant:'李晓';
+    $('c_dept').value=editingClaim?editingClaim.dept:'华东区';
+    $('c_note').value=editingClaim?editingClaim.note:'';
+    editingItems=JSON.parse(JSON.stringify(editingClaim?editingClaim.items:[{name:'',category:'交通费',amount:''}]));
+    renderItems(editingItems);
+    $('claimModal').classList.add('show');
+  }
+  function renderItems(items){
+    $('itemRows').innerHTML=items.map((it,i)=>`<div class="item-row"><select data-i="${i}" data-f="category">${CATS.map(x=>`<option ${x===it.category?'selected':''}>${x}</option>`).join('')}</select><input data-i="${i}" data-f="name" placeholder="费用说明" value="${(it.name||'').replace(/"/g,'&quot;')}" /><input data-i="${i}" data-f="amount" type="number" step="0.01" min="0" placeholder="金额" value="${it.amount??''}" /><button class="del-item" data-i="${i}" title="删除明细">×</button></div>`).join('');
+    $('itemRows').querySelectorAll('select,input').forEach(el=>el.onchange=el.oninput=()=>{editingItems[el.dataset.i][el.dataset.f]=el.dataset.f==='amount'?(el.value===''?'':Number(el.value)):el.value;updateTotal()});
+    $('itemRows').querySelectorAll('.del-item').forEach(b=>b.onclick=()=>{editingItems.splice(b.dataset.i,1);renderItems(editingItems);updateTotal()});
+    updateTotal();
+  }
+  let editingItems=[];
+  function updateTotal(){const t=editingItems.reduce((s,i)=>s+(Number(i.amount)||0),0);$('c_total').textContent=fmt(t)}
+  $('addItem').onclick=()=>{editingItems.push({name:'',category:'其他',amount:''});renderItems(editingItems)};
+  $('closeClaimModal').onclick=$('cancelClaimModal').onclick=()=>$('claimModal').classList.remove('show');
+  $('saveClaim').onclick=()=>{
+    const title=$('c_title').value.trim();
+    if(!title)return showToast('请填写报销单标题');
+    const items=editingItems.filter(i=>i.name||i.amount);
+    if(!items.length)return showToast('请至少添加一条费用明细');
+    const amount=items.reduce((s,i)=>s+(Number(i.amount)||0),0);
+    const rules=state.rules;
+    if(amount>rules.singleCap)return showToast(`单笔金额 ${fmt(amount)} 超过上限 ${fmt(rules.singleCap)}，请拆分报销`);
+    if(editingClaim){
+      Object.assign(editingClaim,{title,applicant:$('c_applicant').value.trim()||'李晓',dept:$('c_dept').value.trim()||'华东区',note:$('c_note').value.trim(),items,amount});
+      editingClaim.history.push({time:new Date().toISOString(),action:'修改报销单',actor:'李晓',note:''});
+      showToast('报销单已更新');
+    }else{
+      state.claims.unshift({id:uid(),no:'BX'+String(Math.floor(1e5+Math.random()*9e5)),title,applicant:$('c_applicant').value.trim()||'李晓',dept:$('c_dept').value.trim()||'华东区',amount,items,status:'draft',note:$('c_note').value.trim(),createdAt:new Date().toISOString(),submittedAt:null,history:[{time:new Date().toISOString(),action:'创建报销单',actor:'李晓',note:''}]});
+      showToast('报销单已保存为草稿');
+    }
+    save();$('claimModal').classList.remove('show');renderDashboard();if(curView==='claims')renderClaims();
+  };
+
+  /* 报销单详情 + 流转 */
+  function openClaimDetail(c){
+    const st=STATUS[c.status];
+    const body=`<div style="display:flex;gap:10px;align-items:center;margin-bottom:15px;flex-wrap:wrap"><span class="tag ${st.cls}" style="font-size:12px"><span class="dot"></span>${st.label}</span><span class="subtle">${c.no} · 创建于 ${fmtDate(c.createdAt)}</span></div>
+      <div class="field-grid" style="margin-bottom:13px">
+        <div class="field wide"><label>标题</label><input value="${c.title}" readonly style="background:#fafbfe;font-weight:600"></div>
+        <div class="field"><label>报销人</label><input value="${c.applicant} · ${c.dept}" readonly style="background:#fafbfe"></div>
+        <div class="field"><label>合计金额</label><input value="${fmt(c.amount)}" readonly style="background:#fafbfe;font-weight:700"></div></div>
+      <table class="tbl" style="margin-bottom:13px"><thead><tr><th>费用说明</th><th>类型</th><th style="text-align:right">金额</th></tr></thead><tbody>${c.items.map(i=>`<tr><td>${i.name||'—'}</td><td>${i.category}</td><td class="amount" style="text-align:right">${fmt(i.amount)}</td></tr>`).join('')}</tbody></table>
+      ${c.note?`<div class="policy" style="background:#f7f9ff;color:#4c5c76">备注：${c.note}</div>`:''}
+      <b style="font-size:13px;display:block;margin:14px 0 4px">流转记录</b>
+      <div class="timeline">${[...c.history].reverse().map(h=>`<div class="tl-item"><div class="tl-dot ${h.action.includes('驳回')?'no':h.action.includes('通过')||h.action.includes('打款')?'ok':''}"></div><div><div class="tl-text"><b>${h.action}</b> · ${h.actor}${h.note?` — ${h.note}`:''}</div><div class="tl-time">${fmtDate(h.time)}</div></div></div>`).join('')}</div>`;
+    let foot='';
+    if(c.status==='draft')foot=`<button class="danger-btn" id="dDel">删除</button><button class="secondary" id="dEdit">编辑</button><button class="primary" id="dSubmit">提交审批</button>`;
+    else if(c.status==='pending')foot=`<button class="secondary" id="dRecall">撤回</button>`;
+    else if(c.status==='rejected')foot=`<button class="danger-btn" id="dDel">删除</button><button class="secondary" id="dEdit">编辑后重新提交</button><button class="primary" id="dSubmit">重新提交</button>`;
+    else foot=`<button class="secondary" id="dClose">关闭</button>`;
+    openDetail(body,foot);
+    const close=()=>$('detailModal').classList.remove('show');
+    if($('dClose'))$('dClose').onclick=close;
+    if($('dEdit'))$('dEdit').onclick=()=>{close();openClaimEditor(c)};
+    if($('dDel'))$('dDel').onclick=()=>{if(confirm(`确定删除报销单 ${c.no}？`)){state.claims=state.claims.filter(x=>x.id!==c.id);save();close();renderClaims();renderDashboard();renderBell();showToast('报销单已删除')}};
+    if($('dSubmit'))$('dSubmit').onclick=()=>{submitClaim(c);close()};
+    if($('dRecall'))$('dRecall').onclick=()=>{c.status='draft';c.history.push({time:new Date().toISOString(),action:'撤回审批',actor:'李晓',note:''});save();close();renderClaims();renderDashboard();renderBell();showToast('已撤回，报销单回到草稿状态')};
+  }
+  function submitClaim(c){
+    const rules=state.rules;
+    if(c.amount>rules.singleCap)return showToast(`单笔金额超过上限 ${fmt(rules.singleCap)}，无法提交`);
+    c.status='pending';c.submittedAt=new Date().toISOString();
+    c.history.push({time:new Date().toISOString(),action:'提交审批',actor:'李晓',note:''});
+    save();pushNotify(`「${c.title}」已提交审批，等待审批人处理`);
+    renderClaims();renderDashboard();renderBell();showToast('已提交审批，可在「待我审批」中处理');
+  }
+  /* 审批 */
+  function renderApprovals(){
+    const list=pendingClaims();
+    $('approveList').innerHTML=list.map(c=>`<div class="approve-card" style="margin-top:14px">
+      <div class="approve-head"><div><b>${c.title}</b> <span class="tag review" style="margin-left:6px"><span class="dot"></span>待审批</span><div class="subtle" style="margin-top:5px">${c.no} · ${c.applicant}（${c.dept}） · 提交于 ${fmtDate(c.submittedAt)}</div></div><div style="font-size:19px;font-weight:750">${fmt(c.amount)}</div></div>
+      <div class="approve-items">${c.items.map(i=>`<div>· ${i.category} ｜ ${i.name||'—'} ｜ ${fmt(i.amount)}</div>`).join('')}${c.note?`<div style="color:#956415;background:#fffaf0;padding:7px 9px;border-radius:7px;margin-top:4px">备注：${c.note}</div>`:''}</div>
+      <div class="approve-foot"><button class="link-btn" data-act="view" data-id="${c.id}">查看详情</button><button class="no-btn" data-act="reject" data-id="${c.id}">✕ 驳回</button><button class="ok-btn" data-act="approve" data-id="${c.id}">✓ 通过</button></div></div>`).join('')||'<div class="empty" style="padding:40px">太棒了，暂无待审批的报销单 🎉</div><div style="height:14px"></div>';
+    $('approveList').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      const c=state.claims.find(x=>x.id===b.dataset.id);
+      const act=b.dataset.act;
+      if(act==='view')openClaimDetail(c);
+      else if(act==='approve')approveClaim(c);
+      else{$('rejectModal').classList.add('show');$('rejectReason').value='';$('confirmReject').dataset.id=c.id}
+    });
+  }
+  function approveClaim(c){
+    c.status='approved';c.history.push({time:new Date().toISOString(),action:'审批通过',actor:'李晓 · 代审批',note:''});
+    save();pushNotify(`「${c.title}」审批通过，金额 ${fmt(c.amount)}`);
+    renderApprovals();renderDashboard();renderBell();showToast('已通过该报销单');
+  }
+  $('closeRejectModal').onclick=$('cancelRejectModal').onclick=()=>$('rejectModal').classList.remove('show');
+  $('confirmReject').onclick=()=>{
+    const reason=$('rejectReason').value.trim();
+    if(!reason)return showToast('请填写驳回理由');
+    const c=state.claims.find(x=>x.id===$('confirmReject').dataset.id);
+    c.status='rejected';c.history.push({time:new Date().toISOString(),action:'审批驳回',actor:'李晓 · 代审批',note:reason});
+    save();pushNotify(`「${c.title}」被驳回：${reason}`);
+    $('rejectModal').classList.remove('show');renderApprovals();renderDashboard();renderBell();showToast('已驳回并通知提交人');
+  };
+
+  /* ================= 费用分析 ================= */
+  function renderAnalytics(){
+    const valid=state.claims.filter(c=>c.status!=='draft');
+    const totalSum=valid.reduce((s,c)=>s+c.amount,0);
+    const paid=state.claims.filter(c=>c.status==='paid').reduce((s,c)=>s+c.amount,0);
+    const avg=valid.length?totalSum/valid.length:0;
+    $('anaKpis').innerHTML=`
+      <div class="kpi"><div class="kpi-label">累计报销总额</div><div class="kpi-value">${fmt(totalSum)}</div><div class="kpi-note neutral">共 ${valid.length} 张报销单</div></div>
+      <div class="kpi green"><div class="kpi-label">已打款金额</div><div class="kpi-value">${fmt(paid)}</div><div class="kpi-note">已完成闭环</div></div>
+      <div class="kpi amber"><div class="kpi-label">单均金额</div><div class="kpi-value">${fmt(avg)}</div><div class="kpi-note neutral">按提交口径</div></div>
+      <div class="kpi red"><div class="kpi-label">最高单笔</div><div class="kpi-value">${fmt(Math.max(0,...valid.map(c=>c.amount)))}</div><div class="kpi-note neutral">上限 ${fmt(state.rules.singleCap)}</div></div>`;
+    /* 近 6 个月柱状图 */
+    const months=[];const base=new Date();base.setDate(1);
+    for(let i=5;i>=0;i--){const d=new Date(base.getFullYear(),base.getMonth()-i,1);months.push({key:`${d.getFullYear()}-${d.getMonth()}`,label:`${d.getMonth()+1}月`,value:0})}
+    valid.forEach(c=>{const d=new Date(c.submittedAt||c.createdAt);const m=months.find(x=>x.key===`${d.getFullYear()}-${d.getMonth()}`);if(m)m.value+=c.amount});
+    const max=Math.max(1,...months.map(m=>m.value));
+    $('barChart').innerHTML=`<svg viewBox="0 0 520 220" style="width:100%">${months.map((m,i)=>{const bw=52,x=40+i*82,h=Math.round(m.value/max*140),y=180-h;return `<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="7" fill="${i===months.length-1?'#3d6df2':'#9db4f7'}"></rect><text x="${x+bw/2}" y="${y-7}" text-anchor="middle" font-size="11" fill="#71809a">${m.value?Math.round(m.value/100)/10+'k':''}</text><text x="${x+bw/2}" y="199" text-anchor="middle" font-size="11" fill="#71809a">${m.label}</text>`}).join('')}<line x1="30" y1="180" x2="500" y2="180" stroke="#e8edf5"/></svg>`;
+    /* 类型占比环形图 */
+    const byCat={};valid.filter(c=>['approved','paid'].includes(c.status)).forEach(c=>c.items.forEach(i=>{byCat[i.category]=(byCat[i.category]||0)+i.amount}));
+    const catArr=Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+    const colors=['#3d6df2','#24a77a','#d98d13','#d85f6a','#8a6ff0','#6d7d95'];
+    const sum=catArr.reduce((s,[,v])=>s+v,0)||1;
+    let acc=0;const segs=catArr.map(([k,v],i)=>{const a0=acc/sum*2*Math.PI;acc+=v;const a1=acc/sum*2*Math.PI;const large=a1-a0>Math.PI?1:0;const x0=110+80*Math.sin(a0),y0=110-80*Math.cos(a0),x1=110+80*Math.sin(a1),y1=110-80*Math.cos(a1);return `<path d="M110 110 L${x0.toFixed(1)} ${y0.toFixed(1)} A80 80 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${colors[i%colors.length]}" opacity=".92"></path>`}).join('');
+    $('donutChart').innerHTML=`<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 220 220" style="width:190px;flex:none"><circle cx="110" cy="110" r="80" fill="none" stroke="#f0f2f7" stroke-width="30"></circle>${segs}<text x="110" y="105" text-anchor="middle" font-size="17" font-weight="700" fill="#132238">${(sum/1000).toFixed(1)}k</text><text x="110" y="124" text-anchor="middle" font-size="10" fill="#71809a">已通过总额</text></svg><div class="legend" style="flex-direction:column;align-items:flex-start">${catArr.map(([k,v],i)=>`<span><i style="background:${colors[i%colors.length]}"></i>${k} · ${fmt(v)}（${Math.round(v/sum*100)}%）</span>`).join('')||'<span class="subtle">暂无已通过数据</span>'}</div></div>`;
+    /* 状态分布 */
+    const stCnt={};valid.forEach(c=>stCnt[c.status]=(stCnt[c.status]||0)+1);
+    const stMax=Math.max(1,...Object.values(stCnt));
+    $('statusChart').innerHTML=Object.entries(STATUS).filter(([k])=>stCnt[k]).map(([k,v])=>`<div class="stat-line"><span>${v.label}</span><div style="flex:1;margin:0 14px;height:9px;background:#f0f2f7;border-radius:6px;overflow:hidden"><div style="width:${stCnt[k]/stMax*100}%;height:100%;background:${k==='approved'||k==='paid'?'var(--green)':k==='pending'?'var(--amber)':k==='rejected'?'var(--red)':'#9aa8bd'};border-radius:6px"></div></div><b>${stCnt[k]} 单</b></div>`).join('')||'<div class="empty">暂无数据</div>';
+    /* Top5 */
+    const top=[...valid].sort((a,b)=>b.amount-a.amount).slice(0,5);
+    $('topItems').innerHTML=top.map((c,i)=>`<div class="stat-line"><span><b style="color:${i===0?'var(--amber)':'var(--muted)'}">TOP${i+1}</b>　${c.title}</span><b>${fmt(c.amount)}</b></div>`).join('')||'<div class="empty">暂无数据</div>';
+  }
+
+  /* ================= 报销规则 ================= */
+  function renderRules(){
+    const r=state.rules;
+    $('r_singleCap').value=r.singleCap;$('r_monthCap').value=r.monthCap;$('r_lodging').value=r.lodging;$('r_meal').value=r.meal;$('r_taxi').value=r.taxi;$('r_validDays').value=r.validDays;
+    $('r_autoAudit').classList.toggle('on',r.autoAudit);$('r_verify').classList.toggle('on',r.verify);
+  }
+  $('saveRules').onclick=()=>{
+    const r=state.rules;
+    r.singleCap=Number($('r_singleCap').value)||r.singleCap;r.monthCap=Number($('r_monthCap').value)||r.monthCap;
+    r.lodging=Number($('r_lodging').value)||r.lodging;r.meal=Number($('r_meal').value)||r.meal;
+    r.taxi=Number($('r_taxi').value)||r.taxi;r.validDays=Number($('r_validDays').value)||r.validDays;
+    save();renderDashboard();showToast('报销规则已保存，审核校验已按新规则执行');
+  };
+  [['r_autoAudit','autoAudit'],['r_verify','verify']].forEach(([id,key])=>$(id).onclick=function(){state.rules[key]=!state.rules[key];this.classList.toggle('on',state.rules[key]);save();showToast(state.rules[key]?'功能已开启':'功能已关闭')});
+  document.querySelectorAll('[data-int]').forEach(sw=>sw.onclick=function(){this.classList.toggle('on');showToast(this.classList.contains('on')?'集成已连接':'集成已断开')});
+
+  /* ================= 通知 ================= */
+  function renderBell(){
+    const unread=state.notifications.filter(n=>!n.read);
+    const badge=$('bellBadge');badge.textContent=unread.length||'';badge.style.display=unread.length?'block':'none';
+    $('bellList').innerHTML=state.notifications.slice(0,10).map(n=>`<div class="dd-item ${n.read?'':'unread'}"><div>${n.text}</div><div class="dd-time">${fmtDate(n.time)}</div></div>`).join('')||'<div class="dd-empty">暂无消息</div>';
+    /* 侧边栏角标 */
+    const p=pendingClaims().length;const ab=$('approveBadge');ab.textContent=p;ab.style.display=p?'block':'none';
+  }
+  $('bellBtn').onclick=e=>{e.stopPropagation();$('bellDrop').classList.toggle('show')};
+  document.addEventListener('click',e=>{if(!e.target.closest('.bell-wrap'))$('bellDrop').classList.remove('show')});
+  $('markRead').onclick=()=>{state.notifications.forEach(n=>n.read=true);save();renderBell();showToast('全部消息已标记为已读')};
+
+  /* ================= 票据上传 + OCR ================= */
+  const OCR_API='/api/invoice-ocr';
+  const modal=$('modal'),toast=$('toast');
+  let activeObjectUrl='',ocrParsed={},ocrFileName='';
+  function openModal(name='新上传票据',file=null){$('modalFile').textContent=name;ocrFileName=name;modal.classList.add('show');if(file)preparePreview(file)}
+  function closeModal(){modal.classList.remove('show');if(activeObjectUrl){URL.revokeObjectURL(activeObjectUrl);activeObjectUrl=''}}
+  $('closeModal').onclick=$('cancelModal').onclick=closeModal;
+  $('newClaim').onclick=$('newClaim2').onclick=function(){switchView('claims');openClaimEditor(null)};
+  const input=$('fileInput'),drop=$('dropzone');
+  $('chooseBtn').onclick=()=>input.click();
+  input.onchange=()=>{if(input.files.length)handleUpload(input.files[0])};
+  function guessCategory(text){const t=text||'';if(/酒店|住宿|宾馆/.test(t))return'住宿费';if(/铁路|火车|航空|机票|客运|出租|出行/.test(t))return'交通费';if(/餐|饮食|餐饮/.test(t))return'餐饮费';if(/通讯|移动|电信|联通/.test(t))return'通讯费';if(/办公|文具|打印/.test(t))return'办公费';return'其他'}
+  function handleUpload(file){showToast('正在读取真实票据并启动 OCR…');openModal(file.name,file)}
+  function preparePreview(file){
+    const preview=$('previewBox'),status=$('ocrStatus'),raw=$('ocrRaw');
+    ['invoiceNo','invoiceDate','seller','total'].forEach(k=>$(k).value='');$('auditResult').value='等待识别后检查';raw.style.display='none';ocrParsed={};
+    if(activeObjectUrl)URL.revokeObjectURL(activeObjectUrl);activeObjectUrl=URL.createObjectURL(file);
+    const isPdf=file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf');
+    if(isPdf)preview.innerHTML=`<iframe src="${activeObjectUrl}" title="发票 PDF 预览" style="width:100%;height:100%;border:0"></iframe>`;
+    else preview.innerHTML=`<img src="${activeObjectUrl}" alt="发票预览" style="width:100%;height:100%;object-fit:contain">`;
+    if(!window.Tesseract){status.textContent='OCR 引擎加载失败，请检查网络后刷新页面。';status.style.color='var(--red)';return;}
+    if(isPdf){
+      if(!window.pdfjsLib){status.textContent='PDF 解析组件加载失败，请检查网络后刷新页面。';status.style.color='var(--red)';return;}
+      status.textContent='正在把 PDF 首页转换为图片…';status.style.color='var(--blue)';
+      pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      pdfjsLib.getDocument({url:activeObjectUrl}).promise.then(pdf=>pdf.getPage(1).then(page=>page.getTextContent().then(content=>({page,text:content.items.map(item=>item.str).join(' ')})))).then(({page,text})=>{const parsed=parseInvoiceText(text);if([parsed.no,parsed.date,parsed.seller,parsed.total].filter(Boolean).length>=2){applyParsed(parsed);status.textContent='PDF 文本识别完成 · 已提取关键字段';status.style.color='var(--green)';raw.textContent='PDF 原始文字：'+text;raw.style.display='block';return;}const viewport=page.getViewport({scale:4}),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=viewport.width;canvas.height=viewport.height;return page.render({canvasContext:ctx,viewport}).promise.then(()=>runOcr(canvas,status,raw));}).catch(err=>{status.textContent='PDF 页面转换失败，请将 PDF 首页另存为清晰图片后重试。';status.style.color='var(--red)';raw.textContent=String(err);raw.style.display='block';});
+    }else runOcr(file,status,raw);
+  }
+  function runOcr(source,status,raw){
+    status.textContent='正在连接发票专用 OCR 服务…';status.style.color='var(--blue)';
+    runPaddleOcr(source,status,raw).then(ok=>{if(!ok)runBrowserOcr(source,status,raw);});
+  }
+  async function runPaddleOcr(source,status,raw){
+    try{const blob=source instanceof HTMLCanvasElement?await new Promise(resolve=>source.toBlob(resolve,'image/png',.96)):source;const body=new FormData();body.append('file',blob,source.name||'invoice-page.png');const response=await fetch(OCR_API,{method:'POST',body});if(!response.ok)throw new Error(`OCR API ${response.status}`);const payload=await response.json();applyParsed(payload.fields||{});document.getElementById('auditResult').value='PaddleOCR 已完成字段识别 · 待接入税务验真';status.textContent='PaddleOCR 识别完成 · 已提取发票字段';status.style.color='var(--green)';raw.textContent='PaddleOCR 原始文本：'+(payload.text||'（服务未返回文本）');raw.style.display='block';return true;}catch(err){status.textContent='专用 OCR 服务不可用，正在切换浏览器 OCR…';status.style.color='var(--amber)';return false;}
+  }
+  function runBrowserOcr(source,status,raw){
+    if(!window.Tesseract){status.textContent='OCR 引擎加载失败，请检查网络后刷新页面。';status.style.color='var(--red)';return;}
+    status.textContent='浏览器 OCR 识别中（首次加载中文模型可能需要几十秒）…';status.style.color='var(--blue)';
+    Tesseract.recognize(source,'chi_sim+eng',{logger:m=>{if(m.status==='recognizing text')status.textContent=`浏览器 OCR 识别中 · ${Math.round((m.progress||0)*100)}%`;}}).then(({data:{text}})=>{applyParsed(parseInvoiceText(text));ocrParsed._text=text;$('expenseType').value=guessCategory(text);$('auditResult').value='浏览器 OCR 已完成基础字段检查 · 待接入税务验真';status.textContent='浏览器 OCR 识别完成 · 已提取关键字段';status.style.color='var(--green)';raw.textContent='浏览器 OCR 原始文本：'+(text.trim()||'（未识别到文字，请上传清晰图片）');raw.style.display='block';}).catch(err=>{status.textContent='OCR 识别失败，请确认图片清晰或稍后重试。';status.style.color='var(--red)';raw.textContent=String(err);raw.style.display='block';});
+  }
+  function applyParsed(parsed){ocrParsed={...ocrParsed,...parsed};$('invoiceNo').value=parsed.no||'未识别到，请手动填写';$('invoiceDate').value=parsed.date||'未识别到，请手动填写';$('seller').value=parsed.seller||'未识别到，请手动填写';$('total').value=parsed.total||'未识别到，请手动填写';if(parsed.seller||parsed._text||ocrParsed._text)$('expenseType').value=guessCategory((parsed.seller||'')+(ocrParsed._text||''))}
+  function parseInvoiceText(text){
+    const compact=(text||'').replace(/[\r\n\t]+/g,' ').replace(/\s{2,}/g,' ');
+    const dateMatch=compact.match(/20\d{2}\s*[年\-\/.]\s*\d{1,2}\s*[月\-\/.]\s*\d{1,2}\s*日?/);
+    const date=dateMatch?dateMatch[0].replace(/\s/g,'').replace(/[年月]/g,'-').replace(/日/g,''):'';
+    const labeledNo=compact.match(/(?:发票号码|票据号码|号码)[^0-9]{0,18}(\d{8,20})/);
+    const allNums=[...compact.matchAll(/(?<!\d)\d{8,20}(?!\d)/g)].map(m=>m[0]);
+    const no=(labeledNo&&labeledNo[1])||(allNums.find(n=>n.length>=19)||allNums.find(n=>n.length===8&&!n.startsWith('91')))||'';
+    const amountMatch=compact.match(/(?:价税合计|小写|合计金额|金额)[^0-9]{0,45}(?:¥|￥|元)?\s*([0-9]{1,3}(?:[,，][0-9]{3})*(?:\.\d{1,2})?)/);
+    const fallbackAmounts=[...compact.matchAll(/(?:¥|￥)\s*([0-9,]+\.\d{1,2})/g)].map(m=>m[1]);
+    const total=amountMatch?('¥ '+amountMatch[1]):(fallbackAmounts.length?'¥ '+fallbackAmounts[fallbackAmounts.length-1]:'');
+    const sellerMatch=compact.match(/(?:销售方|销方|销售名称|销售方信息)[^：:\s]{0,3}[：:\s]*([\u4e00-\u9fa5A-Za-z0-9（）()·\-]{3,40}(?:有限公司|有限责任公司|公司|酒店|铁路|商旅))/);
+    const companyCandidates=[...compact.matchAll(/[\u4e00-\u9fa5A-Za-z0-9（）()·\-]{4,40}(?:有限公司|有限责任公司|公司|酒店|铁路|商旅)/g)].map(m=>m[0]);
+    const seller=sellerMatch?sellerMatch[1]:(companyCandidates.length?companyCandidates[companyCandidates.length-1]:'');
+    return {no,date,total,seller};
+  }
+  $('submitModal').onclick=()=>{
+    /* 1. 落票据库 */
+    const totalNum=parseFloat(String($('total').value).replace(/[^\d.]/g,''))||0;
+    const dup=state.tickets.find(t=>t.invoiceNo&&t.invoiceNo===$('invoiceNo').value.trim());
+    const ticket={id:uid(),name:($('seller').value!=='未识别到，请手动填写'?$('seller').value:'未命名票据')+' · '+$('expenseType').value,meta:`OCR 识别  ·  ${$('invoiceDate').value!=='未识别到，请手动填写'?$('invoiceDate').value:fmtDate(now()).slice(0,10)}`,amount:totalNum,status:dup?'重复票':'已识别',type:dup?'risk':'ok',category:$('expenseType').value,invoiceNo:$('invoiceNo').value.trim(),seller:$('seller').value.trim(),createdAt:new Date().toISOString()};
+    state.tickets.unshift(ticket);
+    closeModal();
+    /* 2. 预填报销单编辑器 */
+    editingClaim=null;
+    $('claimModalTitle').textContent='新建报销单（来自票据识别）';
+    $('c_title').value=`${now().getMonth()+1}月${$('expenseType').value}报销 · ${$('seller').value!=='未识别到，请手动填写'?$('seller').value:ocrFileName}`;
+    $('c_applicant').value='李晓';$('c_dept').value='华东区';$('c_note').value='';
+    editingItems=[{name:ocrFileName,category:$('expenseType').value,amount:totalNum||''}];
+    renderItems(editingItems);
+    $('claimModal').classList.add('show');
+    save();renderDashboard();
+    showToast(dup?'⚠ 检测到重复发票号，已标记为重复票':'票据已入库，请确认报销单信息');
+  };
+  ['dragenter','dragover'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('drag')}));['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('drag')}));drop.addEventListener('drop',ev=>{const f=ev.dataTransfer.files[0];if(f)handleUpload(f)});drop.addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')input.click()});
+  document.querySelectorAll('.mode').forEach(btn=>btn.onclick=()=>{const mode=btn.dataset.mode;if(mode==='邮箱')showToast('已连接企业收票邮箱，今日自动收取 6 张票据');else if(mode==='拍照')showToast('请使用手机端扫码拍摄票据');else{input.click();showToast(`正在打开${mode}文件选择器`)}});
+  $('viewAll').onclick=()=>switchView('claims');
+  /* 详情弹窗通用 */
+  function openDetail(bodyHtml,footHtml){$('detailBody').innerHTML=bodyHtml;$('detailFoot').innerHTML=footHtml;$('detailModal').classList.add('show')}
+  $('closeDetailModal').onclick=()=>$('detailModal').classList.remove('show');
+  document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')}));
+
+  /* ================= 启动 ================= */
+  renderDashboard();renderClaims();
+  </script>
+</body>
+</html>
