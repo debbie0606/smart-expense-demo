@@ -23,6 +23,8 @@
     .rules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;padding:4px 20px 6px}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid #dbe2ef;border-radius:7px;padding:9px;color:var(--ink);background:#fafbfe;outline:none}.field input:focus,.field textarea:focus{border-color:#a9bdf9;background:#fff}.switch-row{display:flex;justify-content:space-between;align-items:center;padding:13px 20px;border-bottom:1px solid #f0f2f7}.switch{width:38px;height:21px;border-radius:12px;background:#d7dfeb;position:relative;transition:.2s;flex:none}.switch:after{content:"";position:absolute;top:2.5px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px #0003}.switch.on{background:var(--green)}.switch.on:after{left:19px}
     /* 弹窗 */
     .modal-backdrop{display:none;position:fixed;inset:0;background:#14233b80;z-index:5;place-items:center;padding:20px}.modal-backdrop.show{display:grid}.modal{background:#fff;border-radius:16px;width:min(620px,100%);box-shadow:0 20px 70px #08142b44;overflow:hidden;max-height:92vh;display:flex;flex-direction:column}.modal-head{display:flex;justify-content:space-between;padding:20px 22px 14px;border-bottom:1px solid var(--line);align-items:center}.modal-head h2{font-size:17px;margin:0}.close{background:#f3f5f9;color:#77849a;width:27px;height:27px;border-radius:7px}.modal-body{padding:20px 22px;overflow:auto}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field-grid .wide{grid-column:1/-1}.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:15px 22px;border-top:1px solid var(--line);flex-wrap:wrap}.secondary{background:#f2f4f8;color:#57657b;border-radius:8px;padding:9px 15px}.secondary:hover{background:#e8ebf1}.danger-btn{background:var(--red);color:#fff;border-radius:8px;padding:9px 15px;font-weight:600}.item-row{display:grid;grid-template-columns:110px 1fr 110px 32px;gap:8px;margin-bottom:8px;align-items:center}.item-row input,.item-row select{border:1px solid #dbe2ef;border-radius:7px;padding:8px;background:#fafbfe;outline:none;width:100%}.del-item{background:var(--red-soft);color:var(--red);border-radius:7px;width:30px;height:32px}.timeline{display:grid;gap:0;margin-top:6px}.tl-item{display:flex;gap:11px;padding:7px 0;position:relative}.tl-item:before{content:"";position:absolute;left:5px;top:22px;bottom:-7px;width:1px;background:var(--line)}.tl-item:last-child:before{display:none}.tl-dot{width:11px;height:11px;border-radius:50%;background:var(--blue);margin-top:4px;flex:none;position:relative;z-index:1}.tl-dot.ok{background:var(--green)}.tl-dot.no{background:var(--red)}.tl-text{font-size:12px;color:#4c5c76}.tl-time{font-size:11px;color:var(--muted)}
+    /* 图片/PDF 大图预览 */
+    .viewer-backdrop{display:none;position:fixed;inset:0;background:#0a152aee;z-index:50;align-items:center;justify-content:center;padding:24px;animation:fadein .2s ease}.viewer-backdrop.show{display:flex}.viewer-wrap{position:relative;max-width:96vw;max-height:96vh;display:flex;flex-direction:column;align-items:center;gap:11px}.viewer-wrap img,.viewer-wrap iframe{max-width:96vw;max-height:88vh;border-radius:10px;box-shadow:0 16px 50px #0008;background:#fff}.viewer-wrap iframe{width:90vw;height:88vh;border:0}.viewer-bar{position:absolute;top:-44px;right:0;display:flex;gap:9px;align-items:center;color:#dde6f5;font-size:12px}.viewer-bar b{font-weight:600}.viewer-close{background:#1f2d44;color:#dde6f5;width:32px;height:32px;border-radius:8px;font-size:16px;display:grid;place-items:center}.viewer-close:hover{background:#2c3d59}.viewer-hint{background:#0a152a99;border-radius:8px;padding:7px 12px;font-size:11px;color:#9eaecc}#previewBox img,#previewBox iframe{cursor:zoom-in}.t-thumb img{cursor:zoom-in}
     .toast{position:fixed;right:25px;bottom:25px;background:#172641;color:#fff;padding:11px 16px;border-radius:9px;box-shadow:0 10px 25px #0e1a2d2a;opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s;font-size:13px;z-index:9}.toast.show{opacity:1;transform:translateY(0)}
     /* 通知 */
     .bell-wrap{position:relative}.dropdown{display:none;position:absolute;right:0;top:44px;width:320px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 44px #0e1a2d1f;overflow:hidden;z-index:6}.dropdown.show{display:block}.dd-head{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;border-bottom:1px solid var(--line);font-weight:700;font-size:13px}.dd-list{max-height:300px;overflow:auto}.dd-item{padding:11px 15px;border-bottom:1px solid #f2f4f9;font-size:12px;color:#4c5c76;display:grid;gap:3px}.dd-item:last-child{border:0}.dd-item.unread{background:#f7f9ff}.dd-time{font-size:11px;color:var(--muted)}.dd-empty{padding:24px;text-align:center;color:var(--muted);font-size:12px}
@@ -501,6 +503,20 @@
   function processNext(){if(uploadQueue.length){const f=uploadQueue.shift();showToast(`继续处理队列中的票据（剩余 ${uploadQueue.length} 张）…`);openModal(f.name,f)}}
   function closeModal(next=true){modal.classList.remove('show');if(activeObjectUrl){URL.revokeObjectURL(activeObjectUrl);activeObjectUrl=''}if(next)processNext()}
   $('closeModal').onclick=$('cancelModal').onclick=()=>closeModal(true);
+  /* ================= 灯箱大图预览 ================= */
+  const viewer=$('viewer'),viewerWrap=$('viewerWrap'),viewerName=$('viewerName');let viewerObjectUrl='';
+  function openViewer(src,name='票据预览',isPdf=false){
+    while(viewerWrap.lastChild&&!viewerWrap.lastChild.classList.contains('viewer-bar'))viewerWrap.removeChild(viewerWrap.lastChild);
+    if(isPdf){const f=document.createElement('iframe');f.src=src;f.title=name;viewerWrap.appendChild(f)}
+    else{const img=document.createElement('img');img.src=src;img.alt=name;viewerWrap.appendChild(img)}
+    viewerName.textContent=name+'（点击空白处关闭）';
+    viewer.classList.add('show');
+  }
+  function closeViewer(){viewer.classList.remove('show');while(viewerWrap.lastChild&&!viewerWrap.lastChild.classList.contains('viewer-bar'))viewerWrap.removeChild(viewerWrap.lastChild)}
+  $('closeViewer').onclick=closeViewer;
+  viewer.addEventListener('click',e=>{if(e.target===viewer)closeViewer()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&viewer.classList.contains('show'))closeViewer()});
+  document.addEventListener('click',e=>{const prev=e.target.closest&&e.target.closest('#previewSrc');if(prev){e.preventDefault();e.stopPropagation();openViewer(prev.src,(prev.alt||ocrFileName||'票据预览'),prev.dataset.pdf==='1');return}const thumb=e.target.closest&&e.target.closest('.t-thumb img');if(thumb){e.preventDefault();e.stopPropagation();const card=thumb.closest('.ticket');const ticketName=card?card.querySelector('.ticket-name').textContent:'票据预览';openViewer(thumb.src,ticketName+'（点击空白处关闭）',false);return}const pdfThumb=e.target.closest&&e.target.closest('.t-thumb[data-pdf]');if(pdfThumb){openViewer(pdfThumb.dataset.src, pdfThumb.dataset.name||'票据 PDF 预览', true)}});
   $('newClaim').onclick=$('newClaim2').onclick=function(){switchView('claims');openClaimEditor(null)};
   const input=$('fileInput'),drop=$('dropzone');
   $('chooseBtn').onclick=()=>input.click();
@@ -513,8 +529,8 @@
     ['invoiceNo','invoiceDate','seller','total'].forEach(k=>$(k).value='');$('auditResult').value='等待识别后检查';raw.style.display='none';ocrParsed={};lastVerify=null;activeFile=file;activePdfCanvas=null;$('docType').value='其他';$('verifyResult').style.display='none';
     if(activeObjectUrl)URL.revokeObjectURL(activeObjectUrl);activeObjectUrl=URL.createObjectURL(file);
     const isPdf=file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf');
-    if(isPdf)preview.innerHTML=`<iframe src="${activeObjectUrl}" title="发票 PDF 预览" style="width:100%;height:100%;border:0"></iframe>`;
-    else preview.innerHTML=`<img src="${activeObjectUrl}" alt="发票预览" style="width:100%;height:100%;object-fit:contain">`;
+    if(isPdf)preview.innerHTML=`<iframe id="previewSrc" src="${activeObjectUrl}" title="发票 PDF 预览" style="width:100%;height:100%;border:0" data-pdf="1"></iframe>`;
+    else preview.innerHTML=`<img id="previewSrc" src="${activeObjectUrl}" alt="发票预览" style="width:100%;height:100%;object-fit:contain">`;
     if(!window.Tesseract){status.textContent='OCR 引擎加载失败，请检查网络后刷新页面。';status.style.color='var(--red)';return;}
 if(isPdf){
         if(!window.pdfjsLib){status.textContent='PDF 解析组件加载失败，请检查网络后刷新页面。';status.style.color='var(--red)';return;}
@@ -546,7 +562,18 @@ if(isPdf){
     runPaddleOcr(source,status,raw).then(ok=>{if(!ok)runBrowserOcr(source,status,raw);});
   }
   async function runPaddleOcr(source,status,raw){
-    try{const blob=source instanceof HTMLCanvasElement?await new Promise(resolve=>source.toBlob(resolve,'image/png',.96)):source;const body=new FormData();body.append('file',blob,source.name||'invoice-page.png');const response=await fetch(OCR_API,{method:'POST',body});if(!response.ok)throw new Error(`OCR API ${response.status}`);const payload=await response.json();applyParsed(payload.fields||{});ocrParsed._text=payload.text||ocrParsed._text;$('expenseType').value=guessCategory(((payload.fields||{}).seller||'')+(payload.text||''));$('docType').value=guessDocType(payload.text||'');document.getElementById('auditResult').value='PaddleOCR 已完成字段识别 · 可点击「税务验真」核验';status.textContent='PaddleOCR 识别完成 · 已提取发票字段';status.style.color='var(--green)';raw.textContent='PaddleOCR 原始文本：'+(payload.text||'（服务未返回文本）');raw.style.display='block';return true;}catch(err){status.textContent='专用 OCR 服务不可用，正在切换浏览器 OCR…';status.style.color='var(--amber)';return false;}
+    try{const blob=source instanceof HTMLCanvasElement?await new Promise(resolve=>source.toBlob(resolve,'image/png',.96)):source;const body=new FormData();body.append('file',blob,source.name||'invoice-page.png');const response=await fetch(OCR_API,{method:'POST',body});if(!response.ok)throw new Error(`OCR API ${response.status}`);const payload=await response.json();applyParsed(payload.fields||{});ocrParsed._text=payload.text||ocrParsed._text;$('expenseType').value=guessCategory(((payload.fields||{}).seller||'')+(payload.text||''));const dt=(payload.fields||{}).docType;$('docType').value=dt||guessDocType(payload.text||'');document.getElementById('auditResult').value='PaddleOCR 已完成字段识别 · 可点击「税务验真」核验';status.textContent='PaddleOCR 识别完成 · 已提取发票字段';status.style.color='var(--green)';raw.textContent='PaddleOCR 原始文本：'+(payload.text||'（服务未返回文本）');raw.style.display='block';return true;}catch(err){
+      // 混合内容（HTTPS 页面调 HTTP 服务）或服务离线时给出明确提示
+      const isHttps = location.protocol === 'https:';
+      if (isHttps) {
+        status.innerHTML = '当前是 HTTPS 页面（GitHub Pages），浏览器阻止 JS 调用本地 HTTP 服务。请用 <b>本机 file:// 路径打开本地 index.html</b>，或运行 <b>chrome --unsafely-treat-insecure-origin-as-secure=http://127.0.0.1:8600</b> 启动参数。';
+        $('auditResult').value = '⚠ 专用 OCR 服务被浏览器拦截（HTTPS → HTTP 混合内容限制）。如需精准识别，请用本地 file:// 打开页面或启动带特殊参数的 Chrome。';
+      } else {
+        status.textContent = '专用 OCR 服务不可用，正在切换浏览器 OCR…';
+      }
+      status.style.color='var(--amber)';
+      return false;
+    }
   }
   function runBrowserOcr(source,status,raw,baseParsed){
     if(!window.Tesseract){status.textContent='OCR 引擎加载失败，请检查网络后刷新页面。';status.style.color='var(--red)';return;}
@@ -706,5 +733,10 @@ if(isPdf){
   /* ================= 启动 ================= */
   renderDashboard();renderClaims();
   </script>
+
+  <!-- 票据大图预览（灯箱） -->
+  <div class="viewer-backdrop" id="viewer"><div class="viewer-wrap" id="viewerWrap">
+    <div class="viewer-bar"><b id="viewerName">票据预览</b><div class="viewer-hint">点击空白处 / 按 Esc 关闭 · 滚轮缩放</div><button class="viewer-close" id="closeViewer" title="关闭">×</button></div>
+  </div></div>
 </body>
 </html>
