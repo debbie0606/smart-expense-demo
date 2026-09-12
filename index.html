@@ -468,7 +468,7 @@
   const input=$('fileInput'),drop=$('dropzone');
   $('chooseBtn').onclick=()=>input.click();
   input.onchange=()=>{if(input.files.length)handleUpload(input.files[0])};
-  function guessCategory(text){const t=(text||'').replace(/\s+/g,'');if(/发票|住宿发票|酒店|住宿|宾馆|民宿|客房|住宿服务/.test(t))return'住宿费';if(/铁路|火车|高铁|航空|机票|客运|出租|打车|网约车|出行|交通/.test(t))return'交通费';if(/餐|饮食|餐饮|饭店|餐厅/.test(t))return'餐饮费';if(/通讯|移动|电信|联通|宽带/.test(t))return'通讯费';if(/办公|文具|打印|耗材/.test(t))return'办公费';return'其他'}
+  function guessCategory(text){const t=(text||'').replace(/\s+/g,'');if(/住宿发票|酒店|住宿|宾馆|民宿|客房|住宿服务/.test(t))return'住宿费';if(/铁路|火车|高铁|航空|机票|客运|出租|打车|网约车|出行|交通/.test(t))return'交通费';if(/餐|饮食|餐饮|饭店|餐厅/.test(t))return'餐饮费';if(/通讯|移动|电信|联通|宽带/.test(t))return'通讯费';if(/办公|文具|打印|耗材/.test(t))return'办公费';return'其他'}
   function handleUpload(file){showToast('正在读取真实票据并启动 OCR…');openModal(file.name,file)}
   function preparePreview(file){
     const preview=$('previewBox'),status=$('ocrStatus'),raw=$('ocrRaw');
@@ -495,12 +495,29 @@
   function runBrowserOcr(source,status,raw){
     if(!window.Tesseract){status.textContent='OCR 引擎加载失败，请检查网络后刷新页面。';status.style.color='var(--red)';return;}
     status.textContent='浏览器 OCR 识别中（首次加载中文模型可能需要几十秒）…';status.style.color='var(--blue)';
-    Tesseract.recognize(source,'chi_sim+eng',{logger:m=>{if(m.status==='recognizing text')status.textContent=`浏览器 OCR 识别中 · ${Math.round((m.progress||0)*100)}%`;}}).then(({data:{text}})=>{applyParsed(parseInvoiceText(text));ocrParsed._text=text;$('expenseType').value=guessCategory(text);$('auditResult').value='浏览器 OCR 已完成基础字段检查 · 待接入税务验真';status.textContent='浏览器 OCR 识别完成 · 已提取关键字段';status.style.color='var(--green)';raw.textContent='浏览器 OCR 原始文本：'+(text.trim()||'（未识别到文字，请上传清晰图片）');raw.style.display='block';}).catch(err=>{status.textContent='OCR 识别失败，请确认图片清晰或稍后重试。';status.style.color='var(--red)';raw.textContent=String(err);raw.style.display='block';});
+    Tesseract.recognize(source,'chi_sim+eng',{logger:m=>{if(m.status==='recognizing text')status.textContent=`浏览器 OCR 识别中 · ${Math.round((m.progress||0)*100)}%`;}}).then(({data:{text}})=>{applyParsed(parseInvoiceText(text));ocrParsed._text=text;$('expenseType').value=guessCategory(text+' '+ocrFileName);$('auditResult').value='浏览器 OCR 已完成基础字段检查 · 待接入税务验真';status.textContent='浏览器 OCR 识别完成 · 已提取关键字段';status.style.color='var(--green)';raw.textContent='浏览器 OCR 原始文本：'+(text.trim()||'（未识别到文字，请上传清晰图片）');raw.style.display='block';}).catch(err=>{status.textContent='OCR 识别失败，请确认图片清晰或稍后重试。';status.style.color='var(--red)';raw.textContent=String(err);raw.style.display='block';});
   }
   function applyParsed(parsed){ocrParsed={...ocrParsed,...parsed};$('invoiceNo').value=parsed.no||'未识别到，请手动填写';$('invoiceDate').value=parsed.date||'未识别到，请手动填写';$('seller').value=parsed.seller||'未识别到，请手动填写';$('total').value=parsed.total||'未识别到，请手动填写';const categoryText=[parsed.seller,parsed._text,ocrParsed._text,ocrFileName].filter(Boolean).join(' ');$('expenseType').value=guessCategory(categoryText)}
-  function parseInvoiceText(text){const raw=String(text||'');const compact=raw.replace(/\u00a0/g,' ').replace(/[
-	]+/g,' ').replace(/\s{2,}/g,' ').trim();const normalized=compact.replace(/\s+/g,'');const dateMatch=normalized.match(/20\d{2}(?:年|[-\/.])\d{1,2}(?:月|[-\/.])\d{1,2}日?/);const date=dateMatch?dateMatch[0].replace(/[年月]/g,'-').replace(/日/g,''):'';const labeledNo=normalized.match(/(?:发票号码|票据号码|发票号|号码)[:：]?[^0-9]{0,8}(\d{8,24})/);const allNums=[...normalized.matchAll(/(?<!\d)\d{8,24}(?!\d)/g)].map(m=>m[0]);const no=(labeledNo&&labeledNo[1])||(allNums.find(n=>n.length>=16)||allNums.find(n=>n.length===8&&!n.startsWith('91')))||'';const amountMatch=normalized.match(/(?:价税合计(?:小写)?|含税金额|合计金额|小写|金额)[^0-9]{0,24}(?:¥|￥|元|:|：|=)?\s*([0-9]{1,3}(?:[,，][0-9]{3})*(?:\.\d{1,2})?)/);const fallbackAmounts=[...normalized.matchAll(/(?:¥|￥)\s*([0-9,]+\.\d{1,2})/g)].map(m=>m[1]);const total=amountMatch?('¥ '+amountMatch[1]):(fallbackAmounts.length?'¥ '+fallbackAmounts[fallbackAmounts.length-1]:'');const sellerPos=normalized.search(/销售方|销方|销售名称|销售方信息/);const sellerTail=sellerPos>=0?normalized.slice(sellerPos):normalized;const sellerMatch=sellerTail.match(/(?:销售方信息|销售方|销方|销售名称)(?:名称)?[:：]?([\u4e00-\u9fa5A-Za-z0-9（）()·\-]{2,60}(?:有限责任公司|有限公司|公司|酒店|铁路|商旅|宾馆|饭店))/);const companyCandidates=[...normalized.matchAll(/[\u4e00-\u9fa5A-Za-z0-9（）()·\-]{4,60}(?:有限责任公司|有限公司|公司|酒店|铁路|商旅|宾馆|饭店)/g)].map(m=>m[0]);const seller=sellerMatch?sellerMatch[1]:(companyCandidates.length?companyCandidates[companyCandidates.length-1]:'');return {no,date,total,seller,_text:raw};}
-  $('submitModal').onclick=()=>{
+  function parseInvoiceText(text){
+    const raw=String(text||'');
+    const compact=raw.replace(/\s+/g,' ').trim();
+    const normalized=compact.replace(/\s+/g,'');
+    const dateMatch=compact.match(/20\d{2}\s*(?:年|[-\/.])\s*\d{1,2}\s*(?:月|[-\/.])\s*\d{1,2}\s*日?/);
+    const date=dateMatch?dateMatch[0].replace(/\s+/g,'').replace(/[年月]/g,'-').replace(/日/g,'').replace(/[\/.]/g,'-'):'';
+    const labeledNo=compact.match(/(?:发票号码|票据号码|发票号|号码)\s*[:：]?\s*([0-9]{8,24})/);
+    const allNums=[...normalized.matchAll(/(?<!\d)\d{8,24}(?!\d)/g)].map(m=>m[0]);
+    const no=(labeledNo&&labeledNo[1])||(allNums.find(n=>n.length>=16)||allNums.find(n=>n.length===8&&!n.startsWith('91')))||'';
+    const amountMatch=normalized.match(/(?:价税合计(?:小写)?|含税金额|合计金额|小写金额|小写|金额)[^0-9]{0,32}(?:¥|￥|人民币)?\s*([0-9]{1,3}(?:[,，][0-9]{3})*(?:\.\d{1,2})?)/);
+    const currencyAmounts=[...compact.matchAll(/(?:¥|￥|人民币)\s*([0-9][0-9,，]*(?:\.\d{1,2})?)/g)].map(m=>m[1]);
+    const decimalAmounts=[...normalized.matchAll(/(?<!\d)([0-9]{1,9}\.\d{1,2})(?!\d)/g)].map(m=>m[1]);
+    const amountValue=amountMatch?amountMatch[1]:(currencyAmounts.length?currencyAmounts[currencyAmounts.length-1]:(decimalAmounts.length?decimalAmounts[decimalAmounts.length-1]:''));
+    const total=amountValue?'¥ '+amountValue.replace(/[,，]/g,''):'';
+    const sellerLabel=compact.match(/(?:销售方信息|销售方|销方|销售名称)\s*[:：]?\s*(?:名称\s*[:：]?\s*)?([\u4e00-\u9fa5A-Za-z0-9（）()·\-]{2,80})/);
+    const companyCandidates=[...normalized.matchAll(/[\u4e00-\u9fa5A-Za-z0-9（）()·\-]{4,80}(?:有限责任公司|有限公司|集团|公司|酒店|铁路|商旅|宾馆|饭店|航空|客运)/g)].map(m=>m[0]);
+    const seller=sellerLabel?sellerLabel[1]:(companyCandidates.length?companyCandidates[companyCandidates.length-1]:'');
+    return {no,date,total,seller,_text:raw};
+  }
+$('submitModal').onclick=()=>{
     /* 1. 落票据库 */
     const totalNum=parseFloat(String($('total').value).replace(/[^\d.]/g,''))||0;
     const dup=state.tickets.find(t=>t.invoiceNo&&t.invoiceNo===$('invoiceNo').value.trim());
