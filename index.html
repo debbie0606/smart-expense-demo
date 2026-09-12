@@ -458,7 +458,7 @@
   $('markRead').onclick=()=>{state.notifications.forEach(n=>n.read=true);save();renderBell();showToast('全部消息已标记为已读')};
 
   /* ================= 票据上传 + OCR ================= */
-  const OCR_API='/api/invoice-ocr';
+  const OCR_API='https://smart-expense-demo.onrender.com/api/invoice-ocr';
   const modal=$('modal'),toast=$('toast');
   let activeObjectUrl='',ocrParsed={},ocrFileName='';
   function openModal(name='新上传票据',file=null){$('modalFile').textContent=name;ocrFileName=name;modal.classList.add('show');if(file)preparePreview(file)}
